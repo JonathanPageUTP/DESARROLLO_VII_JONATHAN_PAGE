@@ -31,37 +31,27 @@ echo "Texto: '$texto_ejemplo'<br>";
 echo "Resultado:<br>";
 print_r($resultado);
 
-// Más ejemplos de prueba
-echo "<br>--- Más ejemplos ---<br>";
 
 echo"<br><br>";
 
 
 function capitalizar_palabras($texto) {
-    // Dividir el texto en palabras individuales
     $palabras = explode(' ', $texto);
-    
-    // Array para almacenar las palabras capitalizadas
     $palabras_capitalizadas = array();
     
-    // Procesar cada palabra
     foreach ($palabras as $palabra) {
         if (strlen($palabra) > 0) {
-            // Primer carácter en mayúscula
             $primera_letra = strtoupper(substr($palabra, 0, 1));
             
-            // Resto de caracteres en minúscula
             $resto = strtolower(substr($palabra, 1));
             
-            // Combinar primera letra y resto
             $palabras_capitalizadas[] = $primera_letra . $resto;
         } else {
-            // Mantener espacios vacíos
+            
             $palabras_capitalizadas[] = $palabra;
         }
     }
     
-    // Unir todas las palabras con espacios
     return implode(' ', $palabras_capitalizadas);
 }
 
