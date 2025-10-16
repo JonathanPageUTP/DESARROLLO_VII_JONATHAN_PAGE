@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -25,7 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+echo"svkbaclkjvbsdj ". $_SESSION['csrf_token'];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -50,3 +54,4 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 </form>
 </body>
 </html>
+        

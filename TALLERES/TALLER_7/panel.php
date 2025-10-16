@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -20,3 +21,4 @@ if(!isset($_SESSION['usuario'])) {
     <a href="logout.php">Cerrar Sesión</a>
 </body>
 </html>
+        

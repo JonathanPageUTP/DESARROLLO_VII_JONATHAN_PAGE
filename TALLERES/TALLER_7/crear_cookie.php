@@ -11,4 +11,3 @@ setcookie("usuario", "Juan", [
 
 echo "Cookie segura 'usuario' creada.";
 ?>
-       
