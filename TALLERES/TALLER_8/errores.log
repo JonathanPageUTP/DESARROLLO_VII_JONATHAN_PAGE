@@ -1,0 +1,2 @@
+2025-10-27 22:47:08 | transaccion_pdo.php | SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'nuevo@example.com' for key 'usuarios.email'
+2025-10-27 22:47:11 | transaccion_pdo.php | SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'nuevo@example.com' for key 'usuarios.email'
