@@ -1,0 +1,31 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /PROYECTO/
+
+    # ---------------------------------------------------------
+    # 1) Block ONLY direct access to /src/* (not rewrites)
+    # ---------------------------------------------------------
+    # THE_REQUEST contiene algo como: "GET /PROYECTO/src/... HTTP/1.1"
+    RewriteCond %{THE_REQUEST} \s/+PROYECTO/src/ [NC]
+    RewriteRule ^src/ - [R=404,L]
+
+    # ---------------------------------------------------------
+    # 2) Permitir archivos y carpetas reales (css, js, imágenes, etc.)
+    # ---------------------------------------------------------
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # ---------------------------------------------------------
+    # 3) Rutas bonitas genéricas
+    # ---------------------------------------------------------
+
+    # /projects  -> src/projects/index.php?action=list
+    RewriteRule ^([a-zA-Z0-9_-]+)/?$ src/$1/index.php?action=list [L,QSA]
+
+    # /projects/create -> src/projects/index.php?action=create
+    RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$ src/$1/index.php?action=$2 [L,QSA]
+
+    # /projects/edit/123 -> src/projects/index.php?action=edit&id=123
+    RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/([0-9]+)/?$ src/$1/index.php?action=$2&id=$3 [L,QSA]
+</IfModule>
