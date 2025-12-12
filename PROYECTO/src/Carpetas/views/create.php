@@ -24,7 +24,7 @@ ob_start();
             </select>
         </div>
         
-        <input type="hidden" name="usuario_id" value="1">
+        <input type="hidden" name="usuario_id" value="<?= $_SESSION['usuario_id'] ?? 1 ?>">
         
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Crear</button>

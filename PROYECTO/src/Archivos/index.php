@@ -16,10 +16,25 @@ $archivoManager = new ArchivoManager();
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
 
+$usuarioId = $_SESSION['usuario_id'] ?? null;
+
+if (!$usuarioId && $action !== 'create' && $action !== 'login_if_unauthorized') {
+     $_SESSION['error'] = 'Debe iniciar sesión para ver archivos.';
+     header('Location: ' . BASE_URL . 'login');
+     exit;
+}
+
 switch ($action) {
+
+
     case 'create':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $usuarioId = $_POST['usuario_id'] ?? 1;
+            $usuarioId = $_SESSION['usuario_id'] ?? null;
+            if (!$usuarioId) {
+                $_SESSION['error'] = 'Debes iniciar sesión para subir archivos';
+                header('Location: ' . BASE_URL . 'login');
+                exit;
+            }
             $carpetaId = !empty($_POST['carpeta_id']) ? (int)$_POST['carpeta_id'] : null;
             
             if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) {
@@ -48,9 +63,19 @@ switch ($action) {
                 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     $rutaArchivo = 'uploads/' . $newFileName;
+                    
+                    // 1. Crear el archivo
                     $archivoManager->crearArchivo($usuarioId, $carpetaId, $nombreArchivo, $fileSize, $rutaArchivo);
                     
-                    $_SESSION['success'] = 'Archivo subido correctamente';
+                    // 2. Obtener el ID del archivo recién creado
+                    $archivoId = $archivoManager->obtenerUltimoId();
+                    
+                    // 3. Crear la versión 1 inicial
+                    require_once BASE_PATH . 'src/Versiones/VersionManager.php';
+                    $versionManager = new VersionManager();
+                    $versionManager->crearVersion($archivoId, $fileSize, $rutaArchivo, 1);
+                    
+                    $_SESSION['success'] = 'Archivo subido correctamente con versión 1';
                     header('Location: ' . BASE_URL . 'Archivos');
                     exit;
                 } else {
@@ -165,11 +190,68 @@ switch ($action) {
         $archivos = $archivoManager->obtenerSinCarpeta($usuarioId);
         require __DIR__ . '/views/list.php';
         break;
+
+    case 'restaurar_version':
+    if ($id && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $versionId = $_POST['version_id'] ?? null;
+        
+        if ($versionId) {
+            require_once BASE_PATH . 'src/Versiones/VersionManager.php';
+            $versionManager = new VersionManager();
+            
+            // Obtener la versión que se quiere restaurar
+            $versionAntigua = $versionManager->obtenerPorId($versionId);
+            
+            if ($versionAntigua) {
+                $archivo = $archivoManager->obtenerPorId($versionAntigua['archivo_id']);
+                
+                // Leer contenido del archivo actual (que tiene la versión antigua)
+                $rutaCompleta = BASE_PATH . $archivo['ruta_archivo'];
+                $contenidoActual = file_get_contents($rutaCompleta);
+                
+                // PROBLEMA: El archivo físico solo tiene UNA versión (la última)
+                // SOLUCIÓN: Necesitas guardar cada versión en archivos DIFERENTES
+                
+                $_SESSION['error'] = 'Para restaurar versiones necesitas guardar archivos físicos separados';
+            }
+        }
+    }
+    header('Location: ' . BASE_URL . 'Archivos');
+    exit;
+
+case 'edit_content':
+    if ($id) {
+        $archivo = $archivoManager->obtenerPorId($id);
+        if ($archivo && file_exists(BASE_PATH . $archivo['ruta_archivo'])) {
+            $contenido = file_get_contents(BASE_PATH . $archivo['ruta_archivo']);
+            require __DIR__ . '/views/edit_content.php';
+            break;
+        }
+    }
+    header('Location: ' . BASE_URL . 'Archivos');
+    exit;
+
+case 'save_content':
+    if ($id && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nuevoContenido = $_POST['contenido'] ?? '';
+        
+        if ($archivoManager->actualizarArchivoConVersion($id, $nuevoContenido)) {
+            $_SESSION['success'] = 'Nueva versión guardada correctamente';
+        } else {
+            $_SESSION['error'] = 'Error al guardar la versión';
+        }
+    }
+    header('Location: ' . BASE_URL . 'Archivos');
+    exit;
         
     case 'list':
     default:
-        $archivos = $archivoManager->obtenerTodos(); 
-        require __DIR__ . '/views/list.php'; 
-        break;
-}
+        if ($usuarioId) {
+        $archivos = $archivoManager->obtenerPorUsuario($usuarioId);
+            } else {
+                $archivos = []; // O maneja la redirección aquí
+            }
+            require __DIR__ . '/views/list.php'; 
+            break;
+ }
 ?>

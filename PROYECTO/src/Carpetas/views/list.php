@@ -54,8 +54,6 @@ ob_start();
                            class="btn btn-info">Ver</a>
                         <a href="<?= BASE_URL ?>Carpetas/edit/<?= $carpeta['id'] ?>" 
                            class="btn btn-edit">Editar</a>
-                        <a href="<?= BASE_URL ?>Carpetas/mover/<?= $carpeta['id'] ?>" 
-                           class="btn btn-warning">Mover</a>
                         <a href="<?= BASE_URL ?>Carpetas/delete/<?= $carpeta['id'] ?>" 
                            class="btn btn-delete" 
                            onclick="return confirm('¿Eliminar esta carpeta? (Las subcarpetas permanecerán)')">Eliminar</a>
@@ -67,30 +65,7 @@ ob_start();
     <?php endif; ?>
 </div>
 
-<style>
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-    }
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    .btn-info {
-        background: #17a2b8;
-    }
-    .btn-warning {
-        background: #ffc107;
-        color: #000;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

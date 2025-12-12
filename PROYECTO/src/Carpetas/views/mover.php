@@ -32,14 +32,7 @@ ob_start();
     </form>
 </div>
 
-<style>
-    small {
-        display: block;
-        margin-top: 5px;
-        color: #666;
-        font-size: 0.9em;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

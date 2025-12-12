@@ -1,0 +1,238 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#main-content {
+    flex-grow: 1;
+    padding-top: 20px;
+}
+
+header {
+    background: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-area {
+    text-align: center;
+    flex-grow: 1;
+    margin-left: -50px;
+}
+
+h1 {
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+#menu-toggle {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+}
+
+#menu-toggle span {
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    color: #333;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1050;
+    top: 0;
+    left: 0;
+    background-color: #eee;
+    overflow-x: hidden;
+    padding-top: 60px;
+    border-right: 1px solid #ccc;
+}
+
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.sidebar a:last-child {
+    border-bottom: none;
+}
+
+.module-icon-sidebar {
+    width: 30px;
+    height: 30px;
+    background: #ccc;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 15px;
+    color: #333;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: #333;
+}
+
+.sidebar-title {
+    padding: 15px 25px 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.user-links {
+    display: flex;
+    align-items: center;
+}
+
+.user-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 0;
+}
+
+.main-modules-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 60px auto;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.module-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 40px;
+    width: 300px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+}
+
+.module-icon-large {
+    width: 80px;
+    height: 80px;
+    background: #333;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+    margin: 0 auto 20px;
+}
+
+.module-card h3 {
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.module-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.module-card-archivos .module-icon-large {
+    background: #007bff;
+}
+
+.module-card-carpetas .module-icon-large {
+    background: #ffc107;
+}
+
+footer {
+    background: #f0f0f0;
+    border-top: 1px solid #ccc;
+    padding: 20px 0;
+    margin-top: auto;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .main-modules-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .module-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}

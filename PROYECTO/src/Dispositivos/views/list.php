@@ -58,47 +58,7 @@ ob_start();
     <?php endif; ?>
 </div>
 
-<style>
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-    }
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    .badge {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 3px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    .badge-pc {
-        background: #e3f2fd;
-        color: #1976d2;
-    }
-    .badge-laptop {
-        background: #f3e5f5;
-        color: #7b1fa2;
-    }
-    .badge-móvil, .badge-movil {
-        background: #e8f5e9;
-        color: #388e3c;
-    }
-    .badge-tablet {
-        background: #fff3e0;
-        color: #f57c00;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

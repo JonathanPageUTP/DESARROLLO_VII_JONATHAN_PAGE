@@ -55,19 +55,6 @@ ob_start();
     </form>
 </div>
 
-<style>
-    .file-info {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        border: 1px solid #e0e0e0;
-    }
-    .file-info p {
-        margin: 5px 0;
-    }
-</style>
-
 <?php 
 $content = ob_get_clean();
 require BASE_PATH . 'views/layout.php';

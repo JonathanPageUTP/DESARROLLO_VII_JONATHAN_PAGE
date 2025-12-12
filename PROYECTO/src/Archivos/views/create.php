@@ -43,7 +43,6 @@ ob_start();
             </select>
         </div>
         
-        <input type="hidden" name="usuario_id" value="1">
         
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Subir Archivo</button>
@@ -52,25 +51,7 @@ ob_start();
     </form>
 </div>
 
-<style>
-    input[type="file"] {
-        padding: 10px;
-        border: 2px dashed #007bff;
-        border-radius: 5px;
-        background: #f8f9fa;
-        cursor: pointer;
-        width: 100%;
-    }
-    input[type="file"]:hover {
-        background: #e9ecef;
-    }
-    small {
-        display: block;
-        margin-top: 5px;
-        color: #666;
-        font-size: 0.9em;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

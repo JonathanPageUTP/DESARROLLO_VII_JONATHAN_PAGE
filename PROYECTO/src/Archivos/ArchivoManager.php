@@ -65,5 +65,46 @@ class ArchivoManager {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
     }
+
+public function actualizarArchivoConVersion(int $id, string $nuevoContenido): bool {
+    // 1. Obtener archivo actual
+    $archivo = $this->obtenerPorId($id);
+    if (!$archivo) return false;
+    
+    require_once BASE_PATH . 'src/Versiones/VersionManager.php';
+    $versionManager = new VersionManager();
+    
+    // 2. Obtener siguiente número de versión
+    $siguienteVersion = $versionManager->obtenerSiguienteNumeroVersion($id);
+    
+    // 3. Crear nuevo archivo físico para esta versión
+    $infoRuta = pathinfo($archivo['ruta_archivo']);
+    $nuevaRuta = $infoRuta['dirname'] . '/' . 
+                 $infoRuta['filename'] . '_v' . $siguienteVersion . '.' . 
+                 $infoRuta['extension'];
+    
+    // 4. Guardar nuevo archivo físico
+    $rutaCompleta = BASE_PATH . $nuevaRuta;
+    file_put_contents($rutaCompleta, $nuevoContenido);
+    
+    // 5. Calcular tamaño
+    $nuevoTamano = strlen($nuevoContenido);
+    
+    // 6. Crear nueva versión
+    $versionManager->crearVersion(
+        $id, 
+        $nuevoTamano, 
+        $nuevaRuta,  // Cada versión tiene su propio archivo
+        $siguienteVersion
+    );
+    
+    // 7. Actualizar registro principal
+    $sql = "UPDATE archivos SET tamano = ?, ruta_archivo = ? WHERE id = ?";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([$nuevoTamano, $nuevaRuta, $id]);
+}
+public function obtenerUltimoId(): ?int {
+    return $this->db->lastInsertId();
+}
 }
 ?>

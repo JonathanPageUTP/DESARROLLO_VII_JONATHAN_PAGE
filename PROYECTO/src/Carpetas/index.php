@@ -101,9 +101,10 @@ switch ($action) {
         break;
         
     case 'list':
-    default:
-        $carpetas = $carpetaManager->obtenerTodos(); 
-        require __DIR__ . '/views/list.php'; 
-        break;
+default:
+    $usuarioId = $_SESSION['usuario_id'] ?? 1;
+    $carpetas = $carpetaManager->obtenerPorUsuario($usuarioId); 
+    require __DIR__ . '/views/list.php'; 
+    break;
 }
 ?>

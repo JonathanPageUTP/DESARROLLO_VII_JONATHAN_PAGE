@@ -31,11 +31,18 @@ class UsuarioManager {
         return $stmt->execute([$nombre, $email, $passwordHash]);
     }
 
-    public function actualizarUsuario(int $id, string $nombre, string $email): bool {
-        $sql = "UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$nombre, $email, $id]);
-    }
+        public function actualizarUsuario(int $id, string $nombre, string $email, string $password = ''): bool {
+            if (!empty($password)) {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                $sql = "UPDATE usuarios SET nombre = ?, email = ?, password = ? WHERE id = ?";
+                $stmt = $this->db->prepare($sql);
+                return $stmt->execute([$nombre, $email, $passwordHash, $id]);
+            } else {
+                $sql = "UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?";
+                $stmt = $this->db->prepare($sql);
+                return $stmt->execute([$nombre, $email, $id]);
+            }
+        }
 
     public function actualizarEspacioUsado(int $id, int $espacioUsado): bool {
         $sql = "UPDATE usuarios SET espacio_usado = ? WHERE id = ?";

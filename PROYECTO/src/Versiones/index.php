@@ -6,17 +6,23 @@ error_reporting(E_ALL);
 define('BASE_PATH', dirname(dirname(__DIR__)) . '/');
 
 require_once BASE_PATH . 'config.php';
-
 require_once BASE_PATH . 'src/Database.php';
-require_once 'VersionManager.php';
-require_once 'Version.php';
+require_once __DIR__ . '/VersionManager.php';
+require_once __DIR__ . '/Version.php';
 
+session_start();
 
 $versionManager = new VersionManager(); 
-
-
 $action = $_GET['action'] ?? 'list';
+$id = $_GET['id'] ?? null;
 
+$usuarioId = $_SESSION['usuario_id'] ?? null; 
+
+if (!$usuarioId) {
+     $_SESSION['error'] = 'Debe iniciar sesión para ver las versiones.';
+     header('Location: ' . BASE_URL . 'login');
+     exit;
+}
 
 switch ($action) {
     case 'create':
@@ -28,90 +34,55 @@ switch ($action) {
 
             if ($archivoId && !empty($rutaArchivo)) {
                 $versionManager->crearVersion($archivoId, $tamano, $rutaArchivo, $numeroVersion);
-                $_SESSION['mensaje'] = 'Nueva versión creada exitosamente';
+                $_SESSION['success'] = 'Nueva versión creada exitosamente';
+                header('Location: ' . BASE_URL . 'Versiones');
+                exit;
             }
-            header('Location: ' . BASE_URL . "src/Versiones");
-            exit;
         }
-        require BASE_PATH . 'views/version_form.php'; 
+        require __DIR__ . '/views/create.php'; 
         break;
 
     case 'delete':
-        $id = $_GET['id'] ?? null;
         if ($id) {
             $versionManager->eliminarVersion($id);
-            $_SESSION['mensaje'] = 'Versión eliminada';
+            $_SESSION['success'] = 'Versión eliminada correctamente';
         }
-        header('Location: ' . BASE_URL . "src/Versiones");
+        header('Location: ' . BASE_URL . 'Versiones');
         exit;
 
-    case 'limpiar_antiguas':
+    case 'limpiar':
         $archivoId = $_GET['archivo_id'] ?? null;
         $mantener = $_GET['mantener'] ?? 5;
         
         if ($archivoId) {
             $eliminadas = $versionManager->eliminarVersionesAnteriores($archivoId, $mantener);
-            $_SESSION['mensaje'] = "Se eliminaron $eliminadas versiones antiguas";
+            $_SESSION['success'] = "Se eliminaron $eliminadas versiones antiguas";
         }
-        header('Location: ' . BASE_URL . "src/Versiones");
+        header('Location: ' . BASE_URL . 'Versiones');
         exit;
-
-    case 'eliminar_todas':
-        $archivoId = $_GET['archivo_id'] ?? null;
-        
-        if ($archivoId && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $versionManager->eliminarTodasLasVersiones($archivoId);
-            $_SESSION['mensaje'] = 'Todas las versiones han sido eliminadas';
-            header('Location: ' . BASE_URL . "src/Versiones");
-            exit;
-        } elseif ($archivoId) {
-            $totalVersiones = $versionManager->contarVersiones($archivoId);
-            require BASE_PATH . 'views/version_confirmar_eliminar.php';
-        }
-        break;
 
     case 'por_archivo':
         $archivoId = $_GET['archivo_id'] ?? null;
         if ($archivoId) {
             $versiones = $versionManager->obtenerPorArchivo($archivoId);
-            print_r($versiones);
+            require __DIR__ . '/views/por_archivo.php';
+        } else {
+            header('Location: ' . BASE_URL . 'Versiones');
             exit;
         }
-        header('Location: ' . BASE_URL . "src/Versiones");
-        exit;
+        break;
 
     case 'historial':
         $archivoId = $_GET['archivo_id'] ?? null;
         if ($archivoId) {
             $historial = $versionManager->obtenerHistorialCompleto($archivoId);
             $estadisticas = $versionManager->obtenerEstadisticas($archivoId);
-            require BASE_PATH . 'views/version_historial.php';
+            require __DIR__ . '/views/historial.php';
         } else {
-            header('Location: ' . BASE_URL . "src/Versiones");
+            header('Location: ' . BASE_URL . 'Versiones');
+            exit;
         }
         break;
-
-    case 'version_reciente':
-        $archivoId = $_GET['archivo_id'] ?? null;
-        if ($archivoId) {
-            $version = $versionManager->obtenerVersionReciente($archivoId);
-            print_r($version);
-            exit;
-        }
-        header('Location: ' . BASE_URL . "src/Versiones");
-        exit;
-
-    case 'version_especifica':
-        $archivoId = $_GET['archivo_id'] ?? null;
-        $numeroVersion = $_GET['numero_version'] ?? null;
-        
-        if ($archivoId && $numeroVersion) {
-            $version = $versionManager->obtenerVersionEspecifica($archivoId, $numeroVersion);
-            print_r($version);
-            exit;
-        }
-        header('Location: ' . BASE_URL . "src/Versiones");
-        exit;
 
     case 'comparar':
         $versionId1 = $_GET['version_id_1'] ?? null;
@@ -121,13 +92,15 @@ switch ($action) {
             $comparacion = $versionManager->compararVersiones($versionId1, $versionId2);
             
             if (!empty($comparacion)) {
-                require BASE_PATH . 'views/version_comparar.php';
+                require __DIR__ . '/views/comparar.php';
             } else {
                 $_SESSION['error'] = 'No se pudieron comparar las versiones';
-                header('Location: ' . BASE_URL . "src/Versiones");
+                header('Location: ' . BASE_URL . 'Versiones');
+                exit;
             }
         } else {
-            header('Location: ' . BASE_URL . "src/Versiones");
+            header('Location: ' . BASE_URL . 'Versiones');
+            exit;
         }
         break;
 
@@ -135,50 +108,104 @@ switch ($action) {
         $archivoId = $_GET['archivo_id'] ?? null;
         if ($archivoId) {
             $estadisticas = $versionManager->obtenerEstadisticas($archivoId);
-            print_r($estadisticas);
+            require __DIR__ . '/views/estadisticas.php';
+        } else {
+            header('Location: ' . BASE_URL . 'Versiones');
             exit;
         }
-        header('Location: ' . BASE_URL . "src/Versiones");
-        exit;
+        break;
 
-    case 'restaurar':
-        $id = $_GET['id'] ?? null;
+  case 'restaurar':
+    if ($id && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Cuando el usuario confirma la restauración
+        $version = $versionManager->obtenerPorId($id);
         
-        if ($id) {
-            $version = $versionManager->obtenerPorId($id);
+        if ($version && file_exists(BASE_PATH . $version['ruta_archivo'])) {
+            require_once BASE_PATH . 'src/Archivos/ArchivoManager.php';
+            $archivoManager = new ArchivoManager();
             
-            if ($version) {
-                // Aquí iría la lógica para restaurar el archivo a esta versión
-                // Por ejemplo, copiar el archivo de ruta_archivo a la ubicación actual
-                $_SESSION['mensaje'] = "Versión {$version['numero_version']} lista para restaurar";
-                require BASE_PATH . 'views/version_restaurar.php';
-            } else {
-                header('Location: ' . BASE_URL . "src/Versiones");
-            }
+            // 1. Leer contenido de la versión que se quiere restaurar
+            $contenidoAntiguo = file_get_contents(BASE_PATH . $version['ruta_archivo']);
+            
+            // 2. Obtener información del archivo actual
+            $archivo = $archivoManager->obtenerPorId($version['archivo_id']);
+            
+            // 3. Obtener el siguiente número de versión
+            $siguienteVersion = $versionManager->obtenerSiguienteNumeroVersion($version['archivo_id']);
+            
+            // 4. Crear ruta para el nuevo archivo físico
+            $infoRuta = pathinfo($archivo['ruta_archivo']);
+            $baseNombre = preg_replace('/_v\d+$/', '', $infoRuta['filename']); // Remover _vN si existe
+            $nuevaRuta = $infoRuta['dirname'] . '/' . 
+                         $baseNombre . '_v' . $siguienteVersion . '.' . 
+                         $infoRuta['extension'];
+            
+            // 5. Guardar el archivo físico con el contenido restaurado
+            $rutaCompleta = BASE_PATH . $nuevaRuta;
+            file_put_contents($rutaCompleta, $contenidoAntiguo);
+            
+            // 6. Calcular tamaño
+            $nuevoTamano = strlen($contenidoAntiguo);
+            
+            // 7. Crear nueva versión en la base de datos
+            $versionManager->crearVersion($version['archivo_id'], $nuevoTamano, $nuevaRuta, $siguienteVersion);
+            
+            // 8. Actualizar el registro principal del archivo
+            $sql = "UPDATE archivos SET tamano = ?, ruta_archivo = ?, updated_at = NOW() WHERE id = ?";
+            $stmt = Database::getInstance()->getConnection()->prepare($sql);
+            $stmt->execute([$nuevoTamano, $nuevaRuta, $version['archivo_id']]);
+            
+            $_SESSION['success'] = "Versión {$version['numero_version']} restaurada exitosamente como versión $siguienteVersion";
+            header('Location: ' . BASE_URL . 'Archivos/edit_content/' . $version['archivo_id']);
+            exit;
         } else {
-            header('Location: ' . BASE_URL . "src/Versiones");
+            $_SESSION['error'] = 'No se pudo encontrar el archivo de la versión';
+            header('Location: ' . BASE_URL . 'Versiones');
+            exit;
         }
-        break;
+    } elseif ($id) {
+        // Mostrar la página de confirmación
+        $version = $versionManager->obtenerPorId($id);
+        if ($version) {
+            require __DIR__ . '/views/restaurar.php';
+            break;
+        }
+    }
+    header('Location: ' . BASE_URL . 'Versiones');
+    exit;
 
-    case 'ver':
-        $id = $_GET['id'] ?? null;
-        if ($id) {
-            $version = $versionManager->obtenerPorId($id);
-            if ($version) {
-                require BASE_PATH . 'views/version_ver.php';
-            } else {
-                header('Location: ' . BASE_URL . "src/Versiones");
-            }
-        } else {
-            header('Location: ' . BASE_URL . "src/Versiones");
-        }
-        break;
+    case 'restaurar_confirmar':
+    if ($id && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $version = $versionManager->obtenerPorId($id);
         
-    default:
-        $versiones = $versionManager->obtenerTodos(); 
-        print_r($versiones);
+        if ($version) {
+            // Obtener contenido de la versión antigua
+            $rutaVersionAntigua = BASE_PATH . $version['ruta_archivo'];
+            $contenidoAntiguo = file_get_contents($rutaVersionAntigua);
+            
+            // Restaurar usando el método que creamos
+            require_once BASE_PATH . 'src/Archivos/ArchivoManager.php';
+            $archivoManager = new ArchivoManager();
+            
+            if ($archivoManager->actualizarArchivoConVersion($version['archivo_id'], $contenidoAntiguo)) {
+                $_SESSION['success'] = "Versión {$version['numero_version']} restaurada correctamente";
+            }
+        }
+        
+        header('Location: ' . BASE_URL . 'Versiones/historial/' . $version['archivo_id']);
         exit;
-        require BASE_PATH . 'views/version_list.php'; 
+    }
+    break;
+        
+    case 'list':
+    default:
+        if ($usuarioId) {
+            $versiones = $versionManager->obtenerUltimasPorUsuario($usuarioId); 
+        } else {
+            $versiones = [];
+        }
+        require __DIR__ . '/views/list.php'; 
         break;
 }
+
 ?>

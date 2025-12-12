@@ -1,0 +1,209 @@
+/* ============================================
+   ESTILOS DE AUTENTICACIÓN (LOGIN Y REGISTER)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* ============================================
+   CONTENEDORES
+   ============================================ */
+.login-container,
+.register-container {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ============================================
+   SECCIÓN DEL LOGO
+   ============================================ */
+.logo-section {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo-icon {
+    width: 64px;
+    height: 64px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+h1 {
+    color: #1a1a1a;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #999;
+}
+
+/* ============================================
+   MENSAJES
+   ============================================ */
+.error-message {
+    background: #fff5f5;
+    border: 1px solid #fee;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #c41e3a;
+    font-size: 14px;
+}
+
+.success-message {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #0c4a6e;
+    font-size: 14px;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn-login,
+.btn-register {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-login:hover,
+.btn-register:hover {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+.btn-login:active,
+.btn-register:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   ENLACES DEL PIE
+   ============================================ */
+.footer-links {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.footer-links a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+/* ============================================
+   EXTRAS
+   ============================================ */
+.password-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+    .login-container,
+    .register-container {
+        padding: 32px 24px;
+    }
+    
+    h1 {
+        font-size: 22px;
+    }
+    
+    .logo-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+    }
+}

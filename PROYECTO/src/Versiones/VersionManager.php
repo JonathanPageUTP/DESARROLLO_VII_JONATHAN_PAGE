@@ -8,9 +8,28 @@ class VersionManager {
     }
 
     public function obtenerTodos() {
-        $stmt = $this->db->query("SELECT * FROM versiones ORDER BY created_at DESC");
+        $stmt = $this->db->query("SELECT v.* FROM versiones v INNER JOIN (SELECT archivo_id, MAX(id) AS max_version_id FROM versiones GROUP BY archivo_id) AS ultimas_versiones ON v.id = ultimas_versiones.max_version_id");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerUltimasPorUsuario(int $usuarioId): array {
+    $sql = "
+        SELECT v.* FROM versiones v
+        INNER JOIN (
+            -- 1. Obtener el ID de la última versión para cada archivo
+            SELECT archivo_id, MAX(id) AS max_version_id 
+            FROM versiones 
+            GROUP BY archivo_id
+        ) AS ultimas_versiones ON v.id = ultimas_versiones.max_version_id
+        INNER JOIN archivos a ON v.archivo_id = a.id -- 2. Unir con la tabla archivos
+        WHERE a.usuario_id = ? -- 3. Filtrar por el ID del usuario
+        ORDER BY v.created_at DESC
+    ";
+    
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$usuarioId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function obtenerPorId(int $id) {
         $stmt = $this->db->prepare("SELECT * FROM versiones WHERE id = ?");

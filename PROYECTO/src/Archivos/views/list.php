@@ -67,8 +67,8 @@ ob_start();
                            class="btn btn-success">Descargar</a>
                         <a href="<?= BASE_URL ?>Archivos/mover/<?= $archivo['id'] ?>" 
                            class="btn btn-warning">Mover</a>
-                        <a href="<?= BASE_URL ?>Archivos/edit/<?= $archivo['id'] ?>" 
-                           class="btn btn-edit">Editar</a>
+                        <a href="<?= BASE_URL ?>Archivos/edit_content/<?= $archivo['id'] ?>"
+                            class="btn btn-sm" title="Editar contenido">Editar</a>
                         <a href="<?= BASE_URL ?>Archivos/delete/<?= $archivo['id'] ?>" 
                            class="btn btn-delete" 
                            onclick="return confirm('¿Eliminar este archivo?')">Eliminar</a>
@@ -80,51 +80,7 @@ ob_start();
     <?php endif; ?>
 </div>
 
-<style>
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-    }
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .alert-error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    .btn-info {
-        background: #17a2b8;
-    }
-    .btn-success {
-        background: #28a745;
-    }
-    .btn-warning {
-        background: #ffc107;
-        color: #000;
-    }
-    .carpeta-badge {
-        display: inline-block;
-        padding: 4px 8px;
-        background: #e3f2fd;
-        color: #1976d2;
-        border-radius: 3px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .carpeta-badge-raiz {
-        display: inline-block;
-        padding: 4px 8px;
-        background: #f5f5f5;
-        color: #666;
-        border-radius: 3px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

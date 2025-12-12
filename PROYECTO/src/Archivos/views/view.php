@@ -11,7 +11,7 @@ ob_start();
     </div>
     
     <div class="file-content">
-        <pre><?= htmlspecialchars($contenido) ?></pre>
+        <textarea id="contenido" name="contenido" rows="20" style="width: 100%; font-family: monospace;" readonly><?= htmlspecialchars($contenido) ?></textarea>
     </div>
     
     <div class="form-actions">
@@ -21,29 +21,7 @@ ob_start();
     </div>
 </div>
 
-<style>
-    .file-info {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-    }
-    .file-content {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 20px;
-        max-height: 500px;
-        overflow-y: auto;
-    }
-    .file-content pre {
-        margin: 0;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-family: 'Courier New', monospace;
-        font-size: 14px;
-    }
-</style>
+
 
 <?php 
 $content = ob_get_clean();

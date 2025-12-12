@@ -52,50 +52,6 @@ ob_start();
     </div>
 </div>
 
-<style>
-    .breadcrumb {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-    }
-    .breadcrumb a {
-        color: #007bff;
-        text-decoration: none;
-    }
-    .breadcrumb a:hover {
-        text-decoration: underline;
-    }
-    .folder-info {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-    .folder-info p {
-        margin: 10px 0;
-    }
-    .subcarpetas-list {
-        list-style: none;
-        padding: 0;
-    }
-    .subcarpetas-list li {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        background: #f8f9fa;
-    }
-    .subcarpetas-list a {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    .subcarpetas-list a:hover {
-        text-decoration: underline;
-    }
-</style>
 
 <?php 
 $content = ob_get_clean();
